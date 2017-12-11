@@ -1,0 +1,12 @@
+{
+  "name": "chronicle-scraper",
+  "version": "1.0.0",
+  "description": "This is a web application that scrapes events from the Austin Chronicle.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
