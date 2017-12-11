@@ -6,3 +6,7 @@
   margin-right: 10px;
   color: #fff !important;
 }
+
+.delete-note-button {
+  float: right;
+}

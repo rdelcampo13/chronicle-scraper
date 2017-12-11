@@ -52,6 +52,7 @@ $(document).on("click", ".save-button", function() {
     }
   })
   .done(function(data) {
+    console.log(data);
     $('#homeModalLabel').text("Success!");
     $('#homeModalText').text(data.title + " has been added to your saved events.");
     $('#homeModal').modal();

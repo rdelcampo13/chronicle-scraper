@@ -1,4 +1,3 @@
-// Grab the articles as a json
 function updateSaves() {
   $.getJSON("/saves", function(dbEvents) {
 
@@ -51,6 +50,46 @@ function updateSaves() {
 }
 
 
+function updateNotes(dbEvent) {
+  $('#noteslist').empty();
+
+  // For each one    
+  dbEvent.notes.forEach(function(note) {
+    // console.log(note);
+    var card = $('<div>')
+        card.addClass('card');
+    var cardBody = $('<div>')
+        cardBody.addClass('card-body');
+        cardBody.text(note.note)
+    var cardDeleteNoteButton = $('<a>')
+        cardDeleteNoteButton.addClass('btn btn-danger event-button delete-note-button')
+        cardDeleteNoteButton.text('Delete');
+        cardDeleteNoteButton.data('note-id', note._id);
+        cardDeleteNoteButton.data('event-id', dbEvent._id);
+        
+    cardBody.append(cardDeleteNoteButton);
+
+    card.append(cardBody);    
+    
+    $('#noteslist').append(card);
+  });
+}
+
+function getEventNotes(eventId) {
+  $.ajax({
+    method: "GET",
+    url: "/events/" + eventId
+  })
+  .done(function(dbEvent) {
+    
+    updateNotes(dbEvent);
+    
+    $('.note-submit').data("event-id", eventId);
+    $('#noteModalLabel').text("Add a Note");
+    $('#noteModal').modal();  
+  })          
+}
+
 $(document).on("click", ".delete-button", function() {  
   $.ajax({
     method: "POST",
@@ -68,12 +107,45 @@ $(document).on("click", ".delete-button", function() {
   })
 });
 
-
-$(document).on("click", ".note-button", function() {      
-  $('#noteModalLabel').text("Add a Note");
-  $('#noteModal').modal();  
+$(document).on("click", ".note-button", function() {  
+  var eventId = $(this).data("event-id");
+  getEventNotes(eventId)
 });
 
+$(document).on("click", ".note-submit", function(event) {  
+  event.preventDefault();
+  var eventId = $(this).data("event-id");
+  var note = $('#newNote').val().trim();
+  
+  $.ajax({
+    method: "POST",
+    url: "/events/" + eventId,
+    data: {
+      note: note
+    }
+  })
+  .done(function(dbEvent) {
+    $('#newNote').val('');
+    getEventNotes(eventId)
+  })        
+});
+
+$(document).on("click", ".delete-note-button", function() {  
+  var noteId = $(this).data("note-id");
+  var eventId = $(this).data("event-id");
+
+  $.ajax({
+    method: "DELETE",
+    url: "/events/" + eventId,
+    data: {
+      noteId: noteId
+    }
+  })
+  .done(function(dbEvent) {
+    $('#newNote').val('');
+    getEventNotes(eventId)
+  })        
+});
 
 updateSaves();
 
