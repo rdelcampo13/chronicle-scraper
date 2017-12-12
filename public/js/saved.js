@@ -93,7 +93,7 @@ function getEventNotes(eventId) {
 $(document).on("click", ".delete-button", function() {  
   $.ajax({
     method: "POST",
-    url: "/events/" + $(this).data("event-id"),
+    url: "/saves/" + $(this).data("event-id"),
     data: {
       saved: false
     }

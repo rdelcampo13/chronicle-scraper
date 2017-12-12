@@ -46,7 +46,7 @@ $(document).on("click", ".save-button", function() {
   
   $.ajax({
     method: "POST",
-    url: "/events/" + $(this).data("event-id"),
+    url: "/saves/" + $(this).data("event-id"),
     data: {
       saved: true
     }

@@ -35,8 +35,9 @@ app.engine("hbs", expressHandlebars({
 
 // Set mongoose to leverage built in JavaScript ES6 Promises
 // Connect to the Mongo DB
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/chronicle_scraper";
 mongoose.Promise = Promise;
-mongoose.connect("mongodb://localhost/chronicle_scraper", {
+mongoose.connect(MONGODB_URI, {
   useMongoClient: true
 });
 
@@ -140,6 +141,20 @@ app.get("/saves", function(req, res) {
       res.json(err);
     });
 });
+
+// Route for saving an Event
+app.post("/saves/:id", function(req, res) {
+  db.ChronicleEvent.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true })
+  .then(function(dbEvent) {
+    // If we were able to successfully update an Article, send it back to the client
+    res.json(dbEvent);
+  })
+  .catch(function(err) {
+    // If an error occurred, send it to the client
+    res.json(err);
+  });  
+});
+
 
 // Route for grabbing a specific Article by id, populate it with it's note
 app.get("/events/:id", function(req, res) {
